@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Seedream Studio <%= page ? '· ' + page.charAt(0).toUpperCase() + page.slice(1) : '' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  <%- page === 'gallery' ? '<link rel="stylesheet" href="/css/gallery.css">' : '' %>
+</head>
+<body class="page-<%= page %>">
+  <!-- Mobile Header -->
+  <header class="mobile-header">
+    <div class="logo">
+      <div class="logo-icon">✦</div>
+      <span class="logo-text">Seedream</span>
+    </div>
+    <button class="menu-toggle" onclick="toggleMobileMenu()">☰</button>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">✦</div>
+        <span class="logo-text">Seedream Studio</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <a href="/" class="nav-item <%= page === 'studio' ? 'active' : '' %>">
+        <span class="nav-icon">✦</span>
+        <span class="nav-text">Studio</span>
+      </a>
+      <a href="/gallery" class="nav-item <%= page === 'gallery' ? 'active' : '' %>">
+        <span class="nav-icon">🖼</span>
+        <span class="nav-text">Gallery</span>
+      </a>
+      <a href="/prompts" class="nav-item <%= page === 'prompts' ? 'active' : '' %>">
+        <span class="nav-icon">📝</span>
+        <span class="nav-text">Prompts</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-header">Settings</div>
+      <div class="setting-item">
+        <label>API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="Atlas Cloud Key..." value="<%= locals.apiKey || '' %>">
+        <button onclick="saveApiKey()" class="btn-small">Save</button>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="status-indicator" id="statusDot"></div>
+      <span class="status-text">Atlas Cloud</span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu Overlay -->
+  <div class="mobile-overlay" onclick="toggleMobileMenu()"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <%- body %>
+  </main>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/mobile.js"></script>
+  <%- page === 'studio' ? '<script src="/js/studio.js"></script>' : '' %>
+  <%- page === 'gallery' ? '<script src="/js/gallery.js"></script>' : '' %>
+</body>
+</html>

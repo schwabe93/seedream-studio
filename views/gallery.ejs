@@ -1,0 +1,62 @@
+<div class="gallery-container">
+  <header class="gallery-header">
+    <h1>Gallery</h1>
+    <div class="gallery-filters">
+      <select id="filterType" onchange="applyFilter()">
+        <option value="all">All Types</option>
+        <option value="image">Images</option>
+        <option value="video">Videos</option>
+      </select>
+      <input type="search" id="searchInput" placeholder="Search prompts..." value="<%= filter.search || '' %>">
+      <button onclick="applyFilter()" class="btn-primary">Filter</button>
+    </div>
+  </header>
+
+  <div class="masonry-grid" id="galleryGrid">
+    <% outputs.forEach(item => { %>
+      <div class="gallery-item" data-type="<%= item.type %>" onclick="openPreview(<%= item.id %>)">
+        <% if (item.type === 'video') { %>
+          <div class="video-thumb">
+            <div class="play-icon">▶</div>
+            <span class="duration"><%= item.duration %>s</span>
+          </div>
+        <% } else { %>
+          <img src="/outputs/images/<%= item.filename %>" 
+               alt="<%= item.prompt %>" 
+               loading="lazy"
+               onerror="this.src='/assets/placeholder.jpg'">
+        <% } %>
+        <div class="item-overlay">
+          <div class="item-meta">
+            <span class="model"><%= item.model %></span>
+            <span class="date"><%= new Date(item.created_at).toLocaleDateString() %></span>
+          </div>
+          <p class="item-prompt"><%= item.prompt %></p>
+          <div class="item-actions">
+            <button onclick="event.stopPropagation(); downloadOutput('<%= item.type %>', '<%= item.filename %>')" class="icon-btn" title="Download">⬇</button>
+            <button onclick="event.stopPropagation(); deleteOutput(<%= item.id %>)" class="icon-btn danger" title="Delete">🗑</button>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+
+  <% if (totalPages > 1) { %>
+    <div class="pagination">
+      <% for(let i = 1; i <= totalPages; i++) { %>
+        <a href="?page=<%= i %>&type=<%= filter.type || 'all' %>" 
+           class="page-link <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
+
+<!-- Preview Modal -->
+<div class="preview-modal" id="previewModal" onclick="closePreview()">
+  <button class="close-btn" onclick="closePreview()">✕</button>
+  <div class="preview-content" onclick="event.stopPropagation()">
+    <img id="previewImage" style="display:none">
+    <video id="previewVideo" controls style="display:none"></video>
+    <div class="preview-info" id="previewInfo"></div>
+  </div>
+</div>

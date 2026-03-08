@@ -1,0 +1,119 @@
+<div class="studio-container">
+  <!-- Left Panel: References & Prompts (Collapsible on mobile) -->
+  <aside class="panel panel-left" id="leftPanel">
+    <div class="panel-section">
+      <h3>Saved Prompts</h3>
+      <div class="prompts-list" id="promptsList">
+        <% prompts.forEach(p => { %>
+          <div class="prompt-card" onclick="usePrompt('<%= encodeURIComponent(p.text) %>')">
+            <div class="prompt-name"><%= p.name %></div>
+            <div class="prompt-preview"><%= p.text.substring(0, 60) %>...</div>
+          </div>
+        <% }) %>
+      </div>
+      <button class="btn-text" onclick="saveCurrentPrompt()">+ Save Current</button>
+    </div>
+
+    <div class="panel-section">
+      <h3>Reference Folders</h3>
+      <div class="folders-list">
+        <% folders.forEach(f => { %>
+          <div class="folder-item" data-id="<%= f.id %>">
+            <div class="folder-header" onclick="toggleFolder(this)">
+              <span>📁 <%= f.name %></span>
+              <span class="badge"><%= f.image_count %></span>
+            </div>
+            <div class="folder-content">
+              <div class="image-grid" id="folder-<%= f.id %>-images"></div>
+              <label class="upload-btn">
+                <input type="file" multiple accept="image/*" onchange="uploadImages(<%= f.id %>, this)">
+                + Add Images
+              </label>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <button class="btn-text" onclick="createFolder()">+ New Folder</button>
+    </div>
+  </aside>
+
+  <!-- Center: Generation Area -->
+  <section class="panel panel-center">
+    <div class="generation-workspace">
+      <div class="mode-switcher">
+        <button class="mode-btn active" onclick="switchMode('image')">🖼 Image</button>
+        <button class="mode-btn" onclick="switchMode('video')">🎬 Video</button>
+      </div>
+
+      <div class="output-area" id="outputArea">
+        <div class="empty-state">
+          <div class="empty-icon">✦</div>
+          <h2>Ready to Create</h2>
+          <p>Enter a prompt and click Generate</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Bar (Fixed at bottom on desktop, mobile sheet) -->
+    <div class="input-bar">
+      <div class="ref-preview" id="refPreview"></div>
+      
+      <div class="input-row">
+        <textarea id="promptInput" placeholder="Describe what you want to generate..." rows="2"></textarea>
+        <button class="generate-btn" id="generateBtn" onclick="generate()">
+          <span class="btn-icon">✦</span>
+          <span class="btn-text">Generate</span>
+        </button>
+      </div>
+
+      <div class="options-bar">
+        <select id="modelSelect" class="select-styled">
+          <optgroup label="Seedream Image">
+            <option value="bytedance/seedream-v4">Seedream v4</option>
+            <option value="bytedance/seedream-v4.5">Seedream v4.5</option>
+            <option value="bytedance/seedream-v5.0-lite">Seedream v5.0 Lite</option>
+          </optgroup>
+          <optgroup label="Seedance Video">
+            <option value="bytedance/seedance-v1.5-pro/image-to-video">Seedance v1.5 I2V</option>
+            <option value="bytedance/seedance-v1.5-pro/text-to-video">Seedance v1.5 T2V</option>
+          </optgroup>
+        </select>
+
+        <select id="sizeSelect" class="select-styled image-opt">
+          <option value="1024*1024">1024×1024</option>
+          <option value="1024*768">1024×768</option>
+          <option value="768*1024">768×1024</option>
+          <option value="2048*2048">2048×2048 (4K)</option>
+        </select>
+
+        <select id="countSelect" class="select-styled image-opt">
+          <option value="1">1 image</option>
+          <option value="4" selected>4 images</option>
+        </select>
+
+        <select id="durationSelect" class="select-styled video-opt" style="display:none">
+          <option value="4">4s</option>
+          <option value="8" selected>8s</option>
+          <option value="12">12s</option>
+        </select>
+
+        <label class="toggle-label">
+          <input type="checkbox" id="autoSaveToggle" checked>
+          Auto-save
+        </label>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Modal: Save Prompt -->
+<div class="modal" id="savePromptModal">
+  <div class="modal-content">
+    <h3>Save Prompt</h3>
+    <input type="text" id="newPromptName" placeholder="Prompt name...">
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('savePromptModal')">Cancel</button>
+      <button class="btn-primary" onclick="confirmSavePrompt()">Save</button>
+    </div>
+  </div>
+</div>

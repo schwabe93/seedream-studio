@@ -1,0 +1,160 @@
+/* Tablet & Mobile */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 0;
+  }
+  
+  body {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar.open {
+    left: 0;
+  }
+  
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 99;
+  }
+  
+  .sidebar.open + .mobile-overlay {
+    display: block;
+  }
+  
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 98;
+  }
+  
+  .menu-toggle {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .main-content {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+  }
+  
+  .input-bar {
+    left: 0;
+    padding: 12px;
+  }
+  
+  .input-row {
+    flex-direction: column;
+  }
+  
+  textarea {
+    height: 60px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .generate-btn {
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+  }
+  
+  .options-bar {
+    gap: 8px;
+  }
+  
+  .select-styled {
+    font-size: 14px;
+    padding: 10px 28px 10px 12px;
+  }
+  
+  .studio-container {
+    flex-direction: column;
+  }
+  
+  .panel-left {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    max-height: 40vh;
+  }
+  
+  .output-area {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .gallery-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .gallery-filters {
+    flex-wrap: wrap;
+  }
+  
+  .preview-modal {
+    padding: 20px;
+  }
+  
+  .close-btn {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .output-area {
+    grid-template-columns: 1fr;
+  }
+  
+  .masonry-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mode-switcher {
+    width: 100%;
+  }
+  
+  .mode-btn {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+/* Touch optimizations */
+@media (hover: none) {
+  .output-card .actions,
+  .item-overlay {
+    opacity: 1 !important;
+  }
+  
+  .item-actions {
+    display: flex !important;
+  }
+}
