@@ -79,6 +79,11 @@ db.serialize(() => {
   )`);
 });
 
+app.get('/prompts', async (req, res) => {
+  const prompts = await dbAll('SELECT * FROM prompts ORDER BY created_at DESC');
+  res.render('prompts', { prompts, page: 'prompts' });
+});
+
 // Multer config
 const refStorage = multer.diskStorage({
   destination: (req, file, cb) => {

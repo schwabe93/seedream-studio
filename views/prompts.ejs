@@ -1,0 +1,71 @@
+<div class="gallery-container">
+  <header class="gallery-header">
+    <h1>Prompt Library</h1>
+    <button class="btn-primary" onclick="createPrompt()">+ New Prompt</button>
+  </header>
+
+  <div class="masonry-grid">
+    <% prompts.forEach(p => { %>
+      <div class="prompt-card" style="aspect-ratio: auto; padding: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+          <h3 style="color: var(--glow); font-size: 16px;"><%= p.name %></h3>
+          <button onclick="deletePrompt(<%= p.id %>)" class="icon-btn" style="position: static; width: 32px; height: 32px;">🗑</button>
+        </div>
+        <p style="color: var(--text); line-height: 1.6; margin-bottom: 16px;"><%= p.text %></p>
+        <button onclick="usePrompt('<%= p.text.replace(/'/g, "\\'") %>')" class="btn-primary" style="width: 100%;">Use Prompt</button>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<div class="modal" id="newPromptModal">
+  <div class="modal-content">
+    <h3>Create Prompt</h3>
+    <input type="text" id="promptName" placeholder="Prompt name...">
+    <textarea id="promptText" placeholder="Enter your prompt text..." style="width: 100%; height: 100px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); margin-bottom: 16px; resize: vertical;"></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('newPromptModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveNewPrompt()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function createPrompt() {
+  document.getElementById('promptName').value = '';
+  document.getElementById('promptText').value = '';
+  document.getElementById('newPromptModal').classList.add('show');
+}
+
+async function saveNewPrompt() {
+  const name = document.getElementById('promptName').value.trim();
+  const text = document.getElementById('promptText').value.trim();
+  
+  if (!name || !text) {
+    alert('Please fill in both fields');
+    return;
+  }
+  
+  await fetch('/api/prompts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, text })
+  });
+  
+  location.reload();
+}
+
+async function deletePrompt(id) {
+  if (!confirm('Delete this prompt?')) return;
+  await fetch(`/api/prompts/${id}`, { method: 'DELETE' });
+  location.reload();
+}
+
+function usePrompt(text) {
+  window.location.href = '/?prompt=' + encodeURIComponent(text);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+</script>
