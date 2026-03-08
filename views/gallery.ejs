@@ -7,24 +7,18 @@
         <option value="image">Images</option>
         <option value="video">Videos</option>
       </select>
-      <input type="search" id="searchInput" placeholder="Search prompts..." value="<%= filter.search || '' %>">
-      <button onclick="applyFilter()" class="btn-primary">Filter</button>
     </div>
   </header>
 
-  <div class="masonry-grid" id="galleryGrid">
+  <div class="masonry-grid">
     <% outputs.forEach(item => { %>
-      <div class="gallery-item" data-type="<%= item.type %>" onclick="openPreview(<%= item.id %>)">
+      <div class="gallery-item" onclick="openPreview('<%= item.type %>', '/outputs/<%= item.type %>s/<%= item.filename %>')">
         <% if (item.type === 'video') { %>
           <div class="video-thumb">
             <div class="play-icon">▶</div>
-            <span class="duration"><%= item.duration %>s</span>
           </div>
         <% } else { %>
-          <img src="/outputs/images/<%= item.filename %>" 
-               alt="<%= item.prompt %>" 
-               loading="lazy"
-               onerror="this.src='/assets/placeholder.jpg'">
+          <img src="/outputs/images/<%= item.filename %>" alt="" loading="lazy">
         <% } %>
         <div class="item-overlay">
           <div class="item-meta">
@@ -33,30 +27,56 @@
           </div>
           <p class="item-prompt"><%= item.prompt %></p>
           <div class="item-actions">
-            <button onclick="event.stopPropagation(); downloadOutput('<%= item.type %>', '<%= item.filename %>')" class="icon-btn" title="Download">⬇</button>
-            <button onclick="event.stopPropagation(); deleteOutput(<%= item.id %>)" class="icon-btn danger" title="Delete">🗑</button>
+            <button onclick="event.stopPropagation(); downloadFile('/outputs/<%= item.type %>s/<%= item.filename %>')" class="icon-btn" title="Download">⬇</button>
           </div>
         </div>
       </div>
     <% }) %>
   </div>
-
-  <% if (totalPages > 1) { %>
-    <div class="pagination">
-      <% for(let i = 1; i <= totalPages; i++) { %>
-        <a href="?page=<%= i %>&type=<%= filter.type || 'all' %>" 
-           class="page-link <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
-      <% } %>
-    </div>
-  <% } %>
 </div>
 
-<!-- Preview Modal -->
 <div class="preview-modal" id="previewModal" onclick="closePreview()">
   <button class="close-btn" onclick="closePreview()">✕</button>
   <div class="preview-content" onclick="event.stopPropagation()">
-    <img id="previewImage" style="display:none">
-    <video id="previewVideo" controls style="display:none"></video>
-    <div class="preview-info" id="previewInfo"></div>
+    <img id="previewImage" style="display:none;max-width:90vw;max-height:90vh;border-radius:8px;">
+    <video id="previewVideo" controls style="display:none;max-width:90vw;max-height:90vh;border-radius:8px;"></video>
   </div>
 </div>
+
+<script>
+function openPreview(type, url) {
+  const modal = document.getElementById('previewModal');
+  const img = document.getElementById('previewImage');
+  const vid = document.getElementById('previewVideo');
+  
+  if (type === 'video') {
+    img.style.display = 'none';
+    vid.style.display = 'block';
+    vid.src = url;
+    vid.play();
+  } else {
+    vid.style.display = 'none';
+    img.style.display = 'block';
+    img.src = url;
+  }
+  
+  modal.classList.add('show');
+}
+
+function closePreview() {
+  document.getElementById('previewModal').classList.remove('show');
+  document.getElementById('previewVideo').pause();
+}
+
+function downloadFile(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = url.split('/').pop();
+  a.click();
+}
+
+function applyFilter() {
+  const type = document.getElementById('filterType').value;
+  window.location.href = '/gallery?type=' + type;
+}
+</script>

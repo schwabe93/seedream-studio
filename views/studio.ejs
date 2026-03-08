@@ -1,11 +1,10 @@
 <div class="studio-container">
-  <!-- Left Panel: References & Prompts (Collapsible on mobile) -->
-  <aside class="panel panel-left" id="leftPanel">
+  <aside class="panel panel-left">
     <div class="panel-section">
       <h3>Saved Prompts</h3>
       <div class="prompts-list" id="promptsList">
         <% prompts.forEach(p => { %>
-          <div class="prompt-card" onclick="usePrompt('<%= encodeURIComponent(p.text) %>')">
+          <div class="prompt-card" onclick="usePrompt('<%= p.text.replace(/'/g, "\\'") %>')">
             <div class="prompt-name"><%= p.name %></div>
             <div class="prompt-preview"><%= p.text.substring(0, 60) %>...</div>
           </div>
@@ -37,7 +36,6 @@
     </div>
   </aside>
 
-  <!-- Center: Generation Area -->
   <section class="panel panel-center">
     <div class="generation-workspace">
       <div class="mode-switcher">
@@ -54,7 +52,6 @@
       </div>
     </div>
 
-    <!-- Input Bar (Fixed at bottom on desktop, mobile sheet) -->
     <div class="input-bar">
       <div class="ref-preview" id="refPreview"></div>
       
@@ -71,7 +68,6 @@
           <optgroup label="Seedream Image">
             <option value="bytedance/seedream-v4">Seedream v4</option>
             <option value="bytedance/seedream-v4.5">Seedream v4.5</option>
-            <option value="bytedance/seedream-v5.0-lite">Seedream v5.0 Lite</option>
           </optgroup>
           <optgroup label="Seedance Video">
             <option value="bytedance/seedance-v1.5-pro/image-to-video">Seedance v1.5 I2V</option>
@@ -82,7 +78,6 @@
         <select id="sizeSelect" class="select-styled image-opt">
           <option value="1024*1024">1024×1024</option>
           <option value="1024*768">1024×768</option>
-          <option value="768*1024">768×1024</option>
           <option value="2048*2048">2048×2048 (4K)</option>
         </select>
 
@@ -94,11 +89,10 @@
         <select id="durationSelect" class="select-styled video-opt" style="display:none">
           <option value="4">4s</option>
           <option value="8" selected>8s</option>
-          <option value="12">12s</option>
         </select>
 
-        <label class="toggle-label">
-          <input type="checkbox" id="autoSaveToggle" checked>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);">
+          <input type="checkbox" id="autoSaveToggle" checked style="accent-color:var(--accent);">
           Auto-save
         </label>
       </div>
@@ -106,7 +100,6 @@
   </section>
 </div>
 
-<!-- Modal: Save Prompt -->
 <div class="modal" id="savePromptModal">
   <div class="modal-content">
     <h3>Save Prompt</h3>
@@ -117,3 +110,20 @@
     </div>
   </div>
 </div>
+
+<style>
+.panel-left { width: 300px; background: var(--surface); border-right: 1px solid var(--border); padding: 20px; overflow-y: auto; }
+.panel-center { flex: 1; display: flex; flex-direction: column; position: relative; }
+.folders-list { display: flex; flex-direction: column; gap: 8px; }
+.folder-content { display: none; padding: 12px; border-top: 1px solid var(--border); }
+.folder-item.open .folder-content { display: block; }
+.image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.image-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; }
+.image-grid img:hover { border-color: var(--glow); }
+.image-grid img.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.ref-preview { display: flex; gap: 8px; margin-bottom: 8px; }
+.ref-preview img { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--accent); }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.video-opt { display: none; }
+</style>
